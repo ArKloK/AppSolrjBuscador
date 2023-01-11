@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
@@ -45,8 +49,6 @@ public class Buscador extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jtxtSearchString = new javax.swing.JTextField();
         jbtnBuscar = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jtxaResults = new javax.swing.JTextArea();
         jComboBox1 = new javax.swing.JComboBox<>();
         checkbox1 = new java.awt.Checkbox();
         checkbox2 = new java.awt.Checkbox();
@@ -54,6 +56,9 @@ public class Buscador extends javax.swing.JFrame {
         checkbox4 = new java.awt.Checkbox();
         jLabel3 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jEditorPane1 = new javax.swing.JEditorPane();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,6 +68,13 @@ public class Buscador extends javax.swing.JFrame {
 
         jLabel2.setText("Cadena a buscar:");
 
+        jtxtSearchString.setText("study");
+        jtxtSearchString.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtxtSearchStringActionPerformed(evt);
+            }
+        });
+
         jbtnBuscar.setText("Buscar");
         jbtnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -70,11 +82,7 @@ public class Buscador extends javax.swing.JFrame {
             }
         });
 
-        jtxaResults.setColumns(20);
-        jtxaResults.setRows(5);
-        jScrollPane2.setViewportView(jtxaResults);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "texto", "autor", "titulo", "id" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "texto", "autor", "titulo", "id", "todo" }));
         jComboBox1.setToolTipText("");
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -85,10 +93,12 @@ public class Buscador extends javax.swing.JFrame {
         checkbox1.setLabel("id");
 
         checkbox2.setLabel("titulo");
+        checkbox2.setState(true);
 
         checkbox3.setLabel("autor");
 
         checkbox4.setLabel("texto");
+        checkbox4.setState(true);
 
         jLabel3.setText("Número de resultados:");
 
@@ -99,75 +109,81 @@ public class Buscador extends javax.swing.JFrame {
             }
         });
 
+        jScrollPane4.setViewportView(jEditorPane1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jtxtSearchString))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(checkbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(25, 25, 25)
+                                    .addComponent(checkbox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(35, 35, 35)
+                                    .addComponent(checkbox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(34, 34, 34)
+                                    .addComponent(checkbox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jbtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 164, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 524, Short.MAX_VALUE)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jtxtColeccion, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(checkbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(25, 25, 25)
-                                .addComponent(checkbox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(35, 35, 35)
-                                .addComponent(checkbox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34)
-                                .addComponent(checkbox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3)
-                                .addGap(29, 29, 29))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jtxtSearchString, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jbtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(79, 79, 79))))
-                    .addGroup(layout.createSequentialGroup()
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane2)))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jtxtColeccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jtxtSearchString, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jtxtSearchString, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(checkbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(checkbox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(checkbox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(checkbox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbtnBuscar)
-                        .addGap(32, 32, 32)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jbtnBuscar))
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jtxtColeccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(147, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                .addGap(84, 84, 84))
         );
 
         pack();
@@ -178,12 +194,16 @@ public class Buscador extends javax.swing.JFrame {
         final SolrClient solrClient = getSolrClient(SOLR_CORE_URL);
 
         SolrQuery solrQuery = new SolrQuery("*:*");
-        String[] lista = {"null", "null", "null", "null"};
+        String[] lista = {null, null, null, null};
 
-        //solrQuery.addField("id");
-        //solrQuery.addField("title");
-        //solrQuery.addField("author");
-        solrQuery.setQuery(jComboBox1.getSelectedItem() + ":" + jtxtSearchString.getText());
+        if (jComboBox1.getSelectedItem().equals("todo")) {
+            solrQuery.setQuery("id: " + jtxtSearchString.getText()
+                    + " OR titulo : " + jtxtSearchString.getText()
+                    + " OR autor: " + jtxtSearchString.getText()
+                    + "OR texto: " + jtxtSearchString.getText());
+        } else {
+            solrQuery.setQuery(jComboBox1.getSelectedItem() + ":" + jtxtSearchString.getText());
+        }
         if (checkbox1.getState()) {
             lista[0] = "id";
         }
@@ -198,8 +218,7 @@ public class Buscador extends javax.swing.JFrame {
         }
         //solrQuery.setSort("id", ORDER.asc);
         solrQuery.setFields(lista[0], lista[1], lista[2], lista[3]);
-        solrQuery.setRows(10);
-
+        solrQuery.setRows(1500);
         // sends search request and gets the response
         QueryResponse response = null;
         try {
@@ -210,28 +229,63 @@ public class Buscador extends javax.swing.JFrame {
         // converts to domain objects and prints to standard output
         if (response != null) {
             SolrDocumentList articles = response.getResults();
-            jtxaResults.setEditable(false);
-            jtxaResults.removeAll();
 
+            jLabel4.setText("Documentos obtenidos: " + articles.size());
+            jEditorPane1.setContentType("text/html");
+            jEditorPane1.removeAll();
             int num = Integer.parseInt(jTextField1.getText());
             //Bucle para mostrar por pantalla
 
+            String text = "";
+
             if (num < articles.size()) {
                 for (int i = 0; i < num; i++) {
-                    String substring = articles.get(i).toString().substring(13, articles.get(i).toString().length());
-                    substring = substring.substring(0, substring.length() - 1);
-                    System.out.println(substring);
-                    jtxaResults.append(substring + "\n");
+                    //String id = articles.get(i).get("id").toString();
+                    String id = "", titulo = "", autor = " ", texto = "";
+                    if (lista[0] != null) {
+                        id = articles.get(i).get("id").toString();
+                    }
+                    if (lista[1] != null) {
+                        titulo = articles.get(i).get("titulo").toString();
+                    }
+                    if (lista[2] != null) {
+                        autor = articles.get(i).get("autor").toString();
+                    }
+                    if (lista[3] != null) {
+                        texto = articles.get(i).get("texto").toString();
+                    }
+
+                    jEditorPane1.setCaretPosition(0);
+
+                    text = text + "<b>" + id + ". " + titulo + "</b><br>"
+                            + "<i>" + autor + "</i><br>"
+                            + "<p>" + texto + "</p><br><br> ";
+
                 }
-            }else{
+            } else {
                 for (int i = 0; i < articles.size(); i++) {
-                    String substring = articles.get(i).toString().substring(13, articles.get(i).toString().length());
-                    substring = substring.substring(0, substring.length() - 1);
-                    System.out.println(substring);
-                    jtxaResults.append(substring + "\n");
+                    //String id = articles.get(i).get("id").toString();
+                    String id = "", titulo = "", autor = " ", texto = "";
+                    if (lista[0] != null) {
+                        id ="<b> " + articles.get(i).get("id").toString() + ". </b>";
+                    }
+                    if (lista[1] != null) {
+                        titulo = "<b> " + articles.get(i).get("titulo").toString() + " </b><br>";
+                    }
+                    if (lista[2] != null) {
+                        autor = "<i> " + articles.get(i).get("autor").toString() + " </i><br>";
+                    }
+                    if (lista[3] != null) {
+                        texto = "<p> " + articles.get(i).get("texto").toString() + "</p><br>";
+                    }
+
+                    jEditorPane1.setCaretPosition(0);
+
+                    text = text + id + titulo + autor + texto + "<br>";
                 }
             }
 
+            jEditorPane1.setText(text);
         }
     }//GEN-LAST:event_jbtnBuscarActionPerformed
 
@@ -243,9 +297,12 @@ public class Buscador extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    private void jtxtSearchStringActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtxtSearchStringActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtxtSearchStringActionPerformed
+
     private void OrdenarPorRanking(SolrDocumentList lista) {
         SolrDocumentList listaaux;
-
     }
 
     private static SolrClient getSolrClient(String core_url) {
@@ -295,13 +352,14 @@ public class Buscador extends javax.swing.JFrame {
     public java.awt.Checkbox checkbox3;
     public java.awt.Checkbox checkbox4;
     public javax.swing.JComboBox<String> jComboBox1;
+    public javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JScrollPane jScrollPane2;
+    public javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane4;
     public javax.swing.JTextField jTextField1;
     private javax.swing.JButton jbtnBuscar;
-    public javax.swing.JTextArea jtxaResults;
     private javax.swing.JTextField jtxtColeccion;
     private javax.swing.JTextField jtxtSearchString;
     // End of variables declaration//GEN-END:variables
