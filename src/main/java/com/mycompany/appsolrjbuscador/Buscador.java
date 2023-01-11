@@ -243,23 +243,21 @@ public class Buscador extends javax.swing.JFrame {
                     //String id = articles.get(i).get("id").toString();
                     String id = "", titulo = "", autor = " ", texto = "";
                     if (lista[0] != null) {
-                        id = articles.get(i).get("id").toString();
+                        id ="<b> " + articles.get(i).get("id").toString() + ". </b>";
                     }
                     if (lista[1] != null) {
-                        titulo = articles.get(i).get("titulo").toString();
+                        titulo = "<b> " + articles.get(i).get("titulo").toString() + " </b><br>";
                     }
                     if (lista[2] != null) {
-                        autor = articles.get(i).get("autor").toString();
+                        autor = "<i> " + articles.get(i).get("autor").toString() + " </i><br>";
                     }
                     if (lista[3] != null) {
-                        texto = articles.get(i).get("texto").toString();
+                        texto = "<p> " + articles.get(i).get("texto").toString() + "</p><br>";
                     }
 
-                    jEditorPane1.setCaretPosition(0);
+                    //jEditorPane1.setCaretPosition(0);
 
-                    text = text + "<b>" + id + ". " + titulo + "</b><br>"
-                            + "<i>" + autor + "</i><br>"
-                            + "<p>" + texto + "</p><br><br> ";
+                    text = text + id + titulo + autor + texto + "<br>";
 
                 }
             } else {
@@ -279,7 +277,7 @@ public class Buscador extends javax.swing.JFrame {
                         texto = "<p> " + articles.get(i).get("texto").toString() + "</p><br>";
                     }
 
-                    jEditorPane1.setCaretPosition(0);
+                    //jEditorPane1.setCaretPosition(0);
 
                     text = text + id + titulo + autor + texto + "<br>";
                 }
