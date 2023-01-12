@@ -194,8 +194,10 @@ public class Buscador extends javax.swing.JFrame {
         final SolrClient solrClient = getSolrClient(SOLR_CORE_URL);
 
         SolrQuery solrQuery = new SolrQuery("*:*");
+        //Lista donde guardamos los datos que queremos filtrar dependiendo de las condiciones de los checkboxs
         String[] lista = {null, null, null, null};
 
+        //Si queremos que la consulta se realice en todos los campos o en campos concretos
         if (jComboBox1.getSelectedItem().equals("todo")) {
             solrQuery.setQuery("id: " + jtxtSearchString.getText()
                     + " OR titulo : " + jtxtSearchString.getText()
@@ -230,18 +232,20 @@ public class Buscador extends javax.swing.JFrame {
         if (response != null) {
             SolrDocumentList articles = response.getResults();
 
+            //Etiqueta para mostrar el numero de documentos obtenidos
             jLabel4.setText("Documentos obtenidos: " + articles.size());
             jEditorPane1.setContentType("text/html");
             jEditorPane1.removeAll();
             int num = Integer.parseInt(jTextField1.getText());
             //Bucle para mostrar por pantalla
 
+            //Texto donde guardaremos toda la cadena final que mostraremos
             String text = "";
 
             if (num < articles.size()) {
                 for (int i = 0; i < num; i++) {
-                    //String id = articles.get(i).get("id").toString();
                     String id = "", titulo = "", autor = " ", texto = "";
+                    //Añadir los campos que queremos mostrar más las cadenas correspondientes al codigo html
                     if (lista[0] != null) {
                         id ="<b> " + articles.get(i).get("id").toString() + ". </b>";
                     }
@@ -254,15 +258,12 @@ public class Buscador extends javax.swing.JFrame {
                     if (lista[3] != null) {
                         texto = "<p> " + articles.get(i).get("texto").toString() + "</p><br>";
                     }
-
-                    //jEditorPane1.setCaretPosition(0);
 
                     text = text + id + titulo + autor + texto + "<br>";
 
                 }
             } else {
                 for (int i = 0; i < articles.size(); i++) {
-                    //String id = articles.get(i).get("id").toString();
                     String id = "", titulo = "", autor = " ", texto = "";
                     if (lista[0] != null) {
                         id ="<b> " + articles.get(i).get("id").toString() + ". </b>";
@@ -276,8 +277,6 @@ public class Buscador extends javax.swing.JFrame {
                     if (lista[3] != null) {
                         texto = "<p> " + articles.get(i).get("texto").toString() + "</p><br>";
                     }
-
-                    //jEditorPane1.setCaretPosition(0);
 
                     text = text + id + titulo + autor + texto + "<br>";
                 }
